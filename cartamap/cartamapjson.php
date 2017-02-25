@@ -8,26 +8,49 @@ class CartaMapJsonGenerator{
         
     }
     
-    public function populate_text_array(){
+    public function createjsonFile(){
+
+        if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
+          return;
+        }
 
         $args = array('post_type' => 'custom_map');
 
-        $map_points = new WP_Query($args);
-
-        
-        if($map_points->have_posts()){
-
-                $map_points->thepost();
+        $map_points = get_posts($args);
                 
-        ?>
+        $jsonFile .=
+        '{
+        "markers": [
+        ';
+        
+        foreach($map_points as $map_point){
                 
-                <h1> <?php echo the_title(); ?></h1>
-                <h1> <?php echo get_post_meta(get_the_ID(), 'map_location_media_id', true); ?></h1>
+                $jsonFile .= '{
+                "ID" : "' . $map_point->ID . '",
+                "name" : "' . $map_point->post_title . '",
+                "category" : "' . $map_point->category . '",
+                "content" : "' . $map_point->content . '",
+                "address" : "' . get_post_meta($map_point->ID, 'map_location_address', true) . '",
+                "state" : "' . get_post_meta($map_point->ID, 'map_location_state', true) . '",
+                "city" : "' . get_post_meta($map_point->ID, 'map_location_city', true) . '",
+                "zipcode" : "' . get_post_meta($map_point->ID, 'map_location_zipcode', true) . '",
+                "location" :{
+                    "lat" : "' . get_post_meta($map_point->ID, 'map_location_lat', true) . '",
+                    "long" : "' . get_post_meta($map_point->ID, 'map_location_long', true) . '"
+                }
+        }';
+                if(end($map_points)->ID !== $map_point->ID ){
+                    $jsonFile .= ',';
+                }
+        };
+    $jsonFile .=']
+    }';
+
+        file_put_contents(dirname(__FILE__) . '/cartamap.json', $jsonFile);
         
-        <?php     
-        }
-        
+         
     }
+        
 }
 
 ?>

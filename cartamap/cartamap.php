@@ -33,6 +33,8 @@ function create_map_location_posttype() {
         )
     );
 }
+
+//Any time a new section is needed it must be added here using the add_meta_box function
 function map_location_metaboxes() {
     // builds form elements for new map location/points.
     // add_meta_box(div id, Title, function called, post-type, context, priority);
@@ -59,11 +61,8 @@ function carta_map_meta_box_data(){
     $map_location_media = $custom['map_location_media_id'][0];
     $map_location_media_type = $custom['map_location_media_type'][0];
     
-    include(dirname(__FILE__) . "/cartamapjson.php");
+    include(dirname(__FILE__) . "/cartametabox.php");
     
-    $jsonGenerator = new CartaMapJsonGenerator();
-    
-    $jsonGenerator->populate_text_array();
 }
 
 function carta_map_meta_box_media_upload(){
@@ -105,24 +104,54 @@ function save_carta_map_meta_box_data(){
         global $post;
         //update_post_meta(post id, field to update, posted data from the field(this will be $_POST['name-of-field'])
         
+        //save meta latlong boxes
+        update_post_meta($post->ID, 'map_location_lat', $_POST['map_location_lat']);
+        update_post_meta($post->ID, 'map_location_lng', $_POST['map_location_lng']);
+        //save meta address boxes
+        update_post_meta($post->ID, 'map_location_address', $_POST['map_location_address']);
+        update_post_meta($post->ID, 'map_location_city', $_POST['map_location_city']);
+        update_post_meta($post->ID, 'map_location_state', $_POST['map_location_state']);
+        update_post_meta($post->ID, 'map_location_zipcode', $_POST['map_location_zipcode']);
+        //save meta media box
         update_post_meta($post->ID, 'map_location_media_id', $_POST['map_location_media_id']);
 }
 
 function generate_carta_map_json_file(){
+
     //json file will be created from data in the wordpress database(all posts with id of 'custom_map')
+    include(dirname(__FILE__) . '/cartamapjson.php');
+    
+    $jsonGenerator = new CartaMapJsonGenerator();
+    
+    $jsonGenerator->createjsonFile();
+    
 }
 
-add_action( 'init', 'create_map_location_posttype' );
+add_action( 'init', 'create_map_location_posttype');
 
 add_action('add_meta_boxes', 'map_location_metaboxes');
 add_action('save_post', 'save_carta_map_meta_box_data');
+add_action('save_post', 'generate_carta_map_json_file');
+
+// include statement to register shortcode file.
 include 'cartamapshortcode.php';
 
+// script for google map API
+add_action( 'admin_enqueue_scripts', 'cartamaps_enqueue_assets' );
+
+function cartamaps_enqueue_assets() {
+	wp_enqueue_script( 
+	  'google-maps', 
+	  'https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyC7g2GaTrXHzZtxNsoZtRXt3ls0Rfx3UBM&v=3&callback=initMap', 
+	  array(), 
+	  '1.0', 
+	  true 
+	);
+}
 
 // Register style sheet.
 // taken from : https://codex.wordpress.org/Function_Reference/wp_register_style
 add_action( 'wp_enqueue_scripts', 'register_plugin_styles' );
-
 /**
  * Register style sheet.
  */
@@ -130,6 +159,7 @@ function register_plugin_styles() {
 	wp_register_style( 'cartamap', plugins_url( 'cartamap/css/style.css' ) );
 	wp_enqueue_style( 'cartamap' );
 }
+
 //not implemented yet
 //add_action('save_post', 'generate_carta_map_json_file');
 ?>

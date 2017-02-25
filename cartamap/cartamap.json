@@ -1,0 +1,30 @@
+{
+        "markers": [
+        {
+                "ID" : "54",
+                "name" : "test meta 2",
+                "category" : "54",
+                "content" : "",
+                "address" : "",
+                "state" : "",
+                "city" : "",
+                "zipcode" : "",
+                "location" :{
+                    "lat" : "34.0604467",
+                    "long" : ""
+                }
+        },{
+                "ID" : "25",
+                "name" : "PaperDragonTest",
+                "category" : "25",
+                "content" : "",
+                "address" : "32431431",
+                "state" : "fewfqqw",
+                "city" : "2efwewfq",
+                "zipcode" : "fdsfawe",
+                "location" :{
+                    "lat" : "3.24325356",
+                    "long" : ""
+                }
+        }]
+    }
