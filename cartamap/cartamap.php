@@ -59,7 +59,11 @@ function carta_map_meta_box_data(){
     $map_location_media = $custom['map_location_media_id'][0];
     $map_location_media_type = $custom['map_location_media_type'][0];
     
+    include(dirname(__FILE__) . "/cartamapjson.php");
     
+    $jsonGenerator = new CartaMapJsonGenerator();
+    
+    $jsonGenerator->populate_text_array();
 }
 
 function carta_map_meta_box_media_upload(){
@@ -112,7 +116,20 @@ add_action( 'init', 'create_map_location_posttype' );
 
 add_action('add_meta_boxes', 'map_location_metaboxes');
 add_action('save_post', 'save_carta_map_meta_box_data');
+include 'cartamapshortcode.php';
 
+
+// Register style sheet.
+// taken from : https://codex.wordpress.org/Function_Reference/wp_register_style
+add_action( 'wp_enqueue_scripts', 'register_plugin_styles' );
+
+/**
+ * Register style sheet.
+ */
+function register_plugin_styles() {
+	wp_register_style( 'cartamap', plugins_url( 'cartamap/css/style.css' ) );
+	wp_enqueue_style( 'cartamap' );
+}
 //not implemented yet
 //add_action('save_post', 'generate_carta_map_json_file');
 ?>
