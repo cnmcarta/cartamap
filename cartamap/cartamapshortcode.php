@@ -2,7 +2,7 @@
 // This file defines a short code to generate the carta interactive map
 //
 add_shortcode( 'cartamap', 'build_custom_map_func' );
-add_action( 'admin_enqueue_scripts', 'cartamaps_enqueue_assets' );
+
 function build_custom_map_func() {
 	ob_start();
 	?>

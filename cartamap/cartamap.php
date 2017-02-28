@@ -40,6 +40,8 @@ function map_location_metaboxes() {
     // add_meta_box(div id, Title, function called, post-type, context, priority);
     add_meta_box('carta-map-point', 'New Map Element' , 'carta_map_meta_box_data' , 'custom_map' , 'normal' , 'high');
     add_meta_box('map-media-meta', 'Pin Media', 'carta_map_meta_box_media_upload', 'custom_map', 'normal', 'low');
+    add_meta_box('map-marker-maker', 'On-click Placer', 'carta_map_meta_box_marker_generate', 'custom_map' , 'normal' , 'low');
+    
 }
 
 //hello
@@ -64,6 +66,9 @@ function carta_map_meta_box_data(){
     include(dirname(__FILE__) . "/cartametabox.php");
     
 }
+/// Code to add markers to be passed to location arrays
+include 'cartamapinput.php';
+function carta_map_meta_box_marker_generate(){}
 
 function carta_map_meta_box_media_upload(){
     global $post;
@@ -101,6 +106,8 @@ function carta_map_meta_box_media_upload(){
 function save_carta_map_meta_box_data(){
     
         // This will be what happens when the post is saved/updated
+        
+        //Get the post that will be changed
         global $post;
         //update_post_meta(post id, field to update, posted data from the field(this will be $_POST['name-of-field'])
         
@@ -119,8 +126,10 @@ function save_carta_map_meta_box_data(){
 function generate_carta_map_json_file(){
 
     //json file will be created from data in the wordpress database(all posts with id of 'custom_map')
-    include(dirname(__FILE__) . '/cartamapjson.php');
     
+    if(!class_exists('CartaMapJsonGenerator')){
+    include(dirname(__FILE__) . '/cartamapjson.php');
+    }
     $jsonGenerator = new CartaMapJsonGenerator();
     
     $jsonGenerator->createjsonFile();
@@ -133,8 +142,11 @@ add_action('add_meta_boxes', 'map_location_metaboxes');
 add_action('save_post', 'save_carta_map_meta_box_data');
 add_action('save_post', 'generate_carta_map_json_file');
 
+add_action('delete_post', 'generate_carta_map_json_file');
+
 // include statement to register shortcode file.
-include 'cartamapshortcode.php';
+//TODO: This include should be inside of a function so that it is only called when the function is called.
+include'cartamapshortcode.php';
 
 // script for google map API
 add_action( 'admin_enqueue_scripts', 'cartamaps_enqueue_assets' );
@@ -160,6 +172,4 @@ function register_plugin_styles() {
 	wp_enqueue_style( 'cartamap' );
 }
 
-//not implemented yet
-//add_action('save_post', 'generate_carta_map_json_file');
 ?>

@@ -1,30 +1,33 @@
 {
         "markers": [
-        {
+        
+            {
                 "ID" : "54",
                 "name" : "test meta 2",
-                "category" : "54",
-                "content" : "",
+                "category" : "",
+                "content" : "So much more meta than before.",
                 "address" : "",
                 "state" : "",
                 "city" : "",
                 "zipcode" : "",
                 "location" :{
                     "lat" : "34.0604467",
-                    "long" : ""
+                    "long" : "-106.9724452"
                 }
-        },{
+            },
+            {
                 "ID" : "25",
                 "name" : "PaperDragonTest",
-                "category" : "25",
-                "content" : "",
+                "category" : "2",
+                "content" : "content :P",
                 "address" : "32431431",
                 "state" : "fewfqqw",
                 "city" : "2efwewfq",
                 "zipcode" : "fdsfawe",
                 "location" :{
                     "lat" : "3.24325356",
-                    "long" : ""
+                    "long" : "3.53454364522"
                 }
-        }]
+            }
+        ]
     }
